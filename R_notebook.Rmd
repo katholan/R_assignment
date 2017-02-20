@@ -1,0 +1,58 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Set working directory
+
+```{r}
+setwd("~/Iowa_State_University/Classes/EEOB 546X/R/R_assignment")
+```
+
+Data Inspection
+
+fang_et_al_genotypes.txt
+```{r}
+genotypes <- read.table("C:\\Users\\Test\\Documents\\Iowa_State_University\\Classes\\EEOB 546X\\R\\R_assignment\\fang_et_al_genotypes.txt", header = T, stringsAsFactors = F)
+head(genotypes)
+dim(genotypes)
+str(genotypes)
+nrow(genotypes)
+ncol(genotypes)
+colnames(genotypes)
+row.names(genotypes)
+```
+
+snp_position.txt
+```{r}
+snps <- read.delim("C:\\Users\\Test\\Documents\\Iowa_State_University\\Classes\\EEOB 546X\\R\\R_assignment\\snp_position.txt", header = T, stringsAsFactors = F)
+head(snps)
+dim(snps)
+str(snps)
+nrow(snps)
+ncol(snps)
+colnames(snps)
+row.names(snps)
+```
+
+Data Processing
+
+Maize
+```{r}
+maize <- genotypes[genotypes$Group == "ZMMIL" | genotypes$Group == "ZMMLR" | genotypes$Group == "ZMMMR",]
+nrow(maize)
+transposed_maize <- t(maize)
+
+```
+
+
+Teosinte
+```{r}
+teosinte <- genotypes[genotypes$Group == "ZMPBA" | genotypes$Group == "ZMPIL" | genotypes$Group == "ZMPJA",]
+nrow(teosinte) 
+transposed_teosinte <- t(teosinte)
+
+```
+
+
+
