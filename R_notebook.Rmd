@@ -39,9 +39,36 @@ Data Processing
 
 Maize
 ```{r}
+#extract only maize rows
 maize <- genotypes[genotypes$Group == "ZMMIL" | genotypes$Group == "ZMMLR" | genotypes$Group == "ZMMMR",]
 nrow(maize)
+
+#transpose resulting data frame
 transposed_maize <- t(maize)
+
+#join snp data to genotypes data
+merged_maize <- merge(snps, transposed_maize, by.x = "SNP_ID", by.y = "row.names")
+nrow(merged_maize)
+
+#cut out only columns you need
+maize_cut <- merged_maize[,-c(2,5:15)]
+
+#sort by snp increasing
+maize_cut_increasing_snps <- maize_cut[order(as.numeric(as.character(maize_cut$Position))),]
+
+#make files for each chromosome
+for (i in 1:10) {
+  maize_loop <- maize_cut_ordered_snps[maize_cut_increasing_snps$Chromosome == i,]
+  write.csv(maize_loop, sprintf("maize_chromosome_%d_increasing_snps", i), row.names = F)
+}
+
+#sort by snp decreasing
+maize_cut_decreasing_snps <- maize_cut[order(-as.numeric(as.character(maize_cut$Position))),]
+
+#substitute ? for -
+
+
+#make files for each chromosome
 
 ```
 
