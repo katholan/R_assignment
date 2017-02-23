@@ -1,5 +1,5 @@
 #Data Inspection
-
+options(stringsAsFactors = F)
 genotypes <- read.table("C:\\Users\\Test\\Documents\\Iowa_State_University\\Classes\\EEOB 546X\\R\\R_assignment\\fang_et_al_genotypes.txt", header = T, stringsAsFactors = F)
 #head(genotypes)
 #dim(genotypes)
@@ -39,7 +39,7 @@ maize_cut_increasing_snps <- maize_cut[order(as.numeric(as.character(maize_cut$P
 
 
 for (i in 1:10) {
-  maize_loop <- maize_cut_ordered_snps[maize_cut_increasing_snps$Chromosome == i,]
+  maize_loop <- maize_cut_increasing_snps[maize_cut_increasing_snps$Chromosome == i,]
   write.csv(maize_loop, sprintf("maize_chromosome_%d_increasing_snps", i), row.names = F)
 }
 #separates by chromosome and then creates CSV file for each chromosome
@@ -47,25 +47,15 @@ for (i in 1:10) {
 maize_cut_decreasing_snps <- maize_cut[order(-as.numeric(as.character(maize_cut$Position))),]
 #sorts by decreasing posittion of snp
 
-
-id <- (4:ncol(maize_cut_decreasing_snps)) 
-maize_cut_decreasing_snps[,id] <- as.numeric(as.character(maize_cut_decreasing_snps[,id]))
-
-
-maize_cut_decreasing_snps_numeric <- maize_cut_decreasing_snps[as.numeric(as.character(maize_cut_decreasing_snps$`1210`)),]
-
-#stats[,i] <- as.numeric(as.character(stats[,i]))
-
-#levels(maize_cut_decreasing_snps[,4:1576]) <- c(levels(maize_cut_decreasing_snps[,4:1576]), "-/-")
-#maize_dashes <- maize_cut_decreasing_snps$c(4:1576)[maize_cut_decreasing_snps$c(4:1576) == '?/?'] <- '-/-'
+maize_dashes <- maize_cut_decreasing_snps
+maize_dashes[maize_dashes == "?/?"] <- "-/-"
 #replaces ? with -
 
 
-#write.csv(d, 
-#         file = "data.csv",
-#         row.names = FALSE)
-
-#my_data <- read.csv("data.csv")
+for (i in 1:10) {
+  maize_loop <- maize_dashes[maize_dashes$Chromosome == i,]
+  write.csv(maize_loop, sprintf("maize_chromosome_%d_decreasing_snps", i), row.names = F)
+}
 
 
 
@@ -75,3 +65,33 @@ nrow(teosinte)
 #includes headers
 transposed_teosinte <- t(teosinte)
 #includes headers that are row numbers
+
+#join snp data to genotypes data
+merged_teosinte <- merge(snps, transposed_teosinte, by.x = "SNP_ID", by.y = "row.names")
+nrow(merged_teosinte)
+
+#cut out only columns you need
+teosinte_cut <- merged_teosinte[,-c(2,5:15)]
+
+#sort by snp increasing
+teosinte_cut_increasing_snps <- teosinte_cut[order(as.numeric(as.character(teosinte_cut$Position))),]
+
+#make files for each chromosome
+for (i in 1:10) {
+  teosinte_loop <- teosinte_cut_increasing_snps[teosinte_cut_increasing_snps$Chromosome == i,]
+  write.csv(teosinte_loop, sprintf("teosinte_chromosome_%d_increasing_snps", i), row.names = F)
+}
+
+#sort by snp decreasing
+teosinte_cut_decreasing_snps <- teosinte_cut[order(-as.numeric(as.character(teosinte_cut$Position))),]
+
+#substitute ? for -
+teosinte_dashes <- teosinte_cut_decreasing_snps
+teosinte_dashes[teosinte_dashes == "?/?"] <- "-/-"
+
+#make files for each chromosome
+for (i in 1:10) {
+  teosinte_loop <- teosinte_dashes[teosinte_dashes$Chromosome == i,]
+  write.csv(teosinte_loop, sprintf("teosinte_chromosome_%d_decreasing_snps", i), row.names = F)
+}
+

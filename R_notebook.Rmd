@@ -1,13 +1,15 @@
 ---
-title: "R Notebook"
+title: "R Assignment"
 output: html_notebook
 ---
 
 Set working directory
-
 ```{r}
 setwd("~/Iowa_State_University/Classes/EEOB 546X/R/R_assignment")
 ```
+
+
+Part I
 
 Data Inspection
 
@@ -42,44 +44,119 @@ Maize
 #extract only maize rows
 maize <- genotypes[genotypes$Group == "ZMMIL" | genotypes$Group == "ZMMLR" | genotypes$Group == "ZMMMR",]
 nrow(maize)
+```
 
-#transpose resulting data frame
+Transpose resulting data frame
+```{r}
 transposed_maize <- t(maize)
+```
 
-#join snp data to genotypes data
+Join snp data to genotypes data
+```{r}
 merged_maize <- merge(snps, transposed_maize, by.x = "SNP_ID", by.y = "row.names")
 nrow(merged_maize)
+```
 
-#cut out only columns you need
+Cut out only columns you need
+```{r}
 maize_cut <- merged_maize[,-c(2,5:15)]
+```
 
-#sort by snp increasing
+Sort by snp increasing
+```{r}
 maize_cut_increasing_snps <- maize_cut[order(as.numeric(as.character(maize_cut$Position))),]
 
-#make files for each chromosome
+```
+
+Make files for each chromosome
+```{r}
 for (i in 1:10) {
-  maize_loop <- maize_cut_ordered_snps[maize_cut_increasing_snps$Chromosome == i,]
+  maize_loop <- maize_cut_increasing_snps[maize_cut_increasing_snps$Chromosome == i,]
   write.csv(maize_loop, sprintf("maize_chromosome_%d_increasing_snps", i), row.names = F)
 }
 
-#sort by snp decreasing
+```
+
+Sort by snp decreasing
+```{r}
 maize_cut_decreasing_snps <- maize_cut[order(-as.numeric(as.character(maize_cut$Position))),]
 
-#substitute ? for -
+```
 
+Substitute ? for -
+```{r}
+maize_dashes <- maize_cut_decreasing_snps
+maize_dashes[maize_dashes == "?/?"] <- "-/-"
 
-#make files for each chromosome
+```
 
+Make files for each chromosome
+```{r}
+for (i in 1:10) {
+  maize_loop <- maize_dashes[maize_dashes$Chromosome == i,]
+  write.csv(maize_loop, sprintf("maize_chromosome_%d_decreasing_snps", i), row.names = F)
+}
 ```
 
 
 Teosinte
 ```{r}
-teosinte <- genotypes[genotypes$Group == "ZMPBA" | genotypes$Group == "ZMPIL" | genotypes$Group == "ZMPJA",]
-nrow(teosinte) 
+#extract only teosinte rows
+teosinte <- genotypes[genotypes$Group == "ZMMIL" | genotypes$Group == "ZMMLR" | genotypes$Group == "ZMMMR",]
+nrow(teosinte)
+```
+
+Transpose resulting data frame
+```{r}
 transposed_teosinte <- t(teosinte)
+```
+
+Join snp data to genotypes data
+```{r}
+merged_teosinte <- merge(snps, transposed_teosinte, by.x = "SNP_ID", by.y = "row.names")
+nrow(merged_teosinte)
+```
+
+Cut out only columns you need
+```{r}
+teosinte_cut <- merged_teosinte[,-c(2,5:15)]
+```
+
+Sort by snp increasing
+```{r}
+teosinte_cut_increasing_snps <- teosinte_cut[order(as.numeric(as.character(teosinte_cut$Position))),]
 
 ```
 
+Make files for each chromosome
+```{r}
+for (i in 1:10) {
+  teosinte_loop <- teosinte_cut_increasing_snps[teosinte_cut_increasing_snps$Chromosome == i,]
+  write.csv(teosinte_loop, sprintf("teosinte_chromosome_%d_increasing_snps", i), row.names = F)
+}
 
+```
+
+Sort by snp decreasing
+```{r}
+teosinte_cut_decreasing_snps <- teosinte_cut[order(-as.numeric(as.character(teosinte_cut$Position))),]
+
+```
+
+Substitute ? for -
+```{r}
+teosinte_dashes <- teosinte_cut_decreasing_snps
+teosinte_dashes[teosinte_dashes == "?/?"] <- "-/-"
+
+```
+
+Make files for each chromosome
+```{r}
+for (i in 1:10) {
+  teosinte_loop <- teosinte_dashes[teosinte_dashes$Chromosome == i,]
+  write.csv(teosinte_loop, sprintf("teosinte_chromosome_%d_decreasing_snps", i), row.names = F)
+}
+```
+
+Part II
 
